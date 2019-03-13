@@ -30,10 +30,6 @@ class DoublyLinkedList<K, V> {
         nextPointer.previous(previousPointer);
     }
 
-    KeyValuePair<K, V> getEntireList() {
-        return this.head;
-    }
-
     void add(K key, V value) {
         KeyValuePair<K, V> newKeyValuePair = new KeyValuePair<>(key, value);
         removeNodeWithKeyIfExists(key);

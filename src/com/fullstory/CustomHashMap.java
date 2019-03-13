@@ -1,7 +1,7 @@
 package com.fullstory;
 
 public class CustomHashMap<K, V> {
-    private static int INDEX_LIMIT = 10;
+    private static int INDEX_LIMIT = 64;
     private final DoublyLinkedList<K, V>[] arrayOfLinkedList;
 
     @SuppressWarnings("unchecked")
