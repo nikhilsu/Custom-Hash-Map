@@ -1,6 +1,6 @@
 package com.fullstory;
 
-class KeyNotFoundException extends Throwable {
+public class KeyNotFoundException extends Throwable {
     private final String message;
 
     KeyNotFoundException(String message) {
@@ -9,8 +9,8 @@ class KeyNotFoundException extends Throwable {
 
     @Override
     public String toString() {
-        return "KeyNotFoundException{" +
-                "No key ='" + message + '\'' +
-                '}';
+        return "KeyNotFoundException { " +
+                "No key = '" + message + '\'' +
+                " }";
     }
 }

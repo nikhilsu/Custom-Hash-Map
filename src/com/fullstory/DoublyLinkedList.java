@@ -4,8 +4,13 @@ import java.util.ArrayList;
 import java.util.stream.Stream;
 
 class DoublyLinkedList<K, V> {
-    private KeyValueNode<K, V> head = null;
-    private int numberOfNodes = 0;
+    private KeyValueNode<K, V> head;
+    private int numberOfNodes;
+
+    DoublyLinkedList() {
+        this.head = null;
+        this.numberOfNodes = 0;
+    }
 
     private void insertAtBeginning(KeyValueNode<K, V> newKeyValueNode) {
         if (this.head != null) {
@@ -27,13 +32,19 @@ class DoublyLinkedList<K, V> {
     }
 
     private void deleteNode(KeyValueNode<K, V> node) {
+        numberOfNodes--;
         KeyValueNode<K, V> previousPointer = node.previous();
         KeyValueNode<K, V> nextPointer = node.next();
-        node.next(null);
-        node.previous(null);
-        previousPointer.next(nextPointer);
-        nextPointer.previous(previousPointer);
-        numberOfNodes--;
+        if (previousPointer == null) {
+            this.head = node.next();
+        } else if (nextPointer == null) {
+            previousPointer.next(null);
+        } else {
+            node.next(null);
+            node.previous(null);
+            previousPointer.next(nextPointer);
+            nextPointer.previous(previousPointer);
+        }
     }
 
     private Stream<KeyValueNode<K, V>> allNodesStream() {
@@ -87,6 +98,10 @@ class DoublyLinkedList<K, V> {
 
     int length() {
         return numberOfNodes;
+    }
+
+    boolean isEmpty() {
+        return this.length() == 0;
     }
 
     Stream<K> getAllKeys() {

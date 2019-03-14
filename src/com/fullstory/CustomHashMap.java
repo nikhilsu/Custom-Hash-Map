@@ -12,12 +12,12 @@ public class CustomHashMap<K, V> implements Iterable<KeyValuePojo<K, V>> {
     private final Object editLock = new Object();
 
     @SuppressWarnings("unchecked")
-    private CustomHashMap() {
+    public CustomHashMap() {
         this.buckets = new DoublyLinkedList[BUCKET_CAPACITY];
     }
 
     private int hash(K key) {
-        return key.hashCode() % BUCKET_CAPACITY;
+        return Math.abs(key.hashCode()) % BUCKET_CAPACITY;
     }
 
     private DoublyLinkedList<K, V> fetchListHoldingKey(K key) {
@@ -36,7 +36,7 @@ public class CustomHashMap<K, V> implements Iterable<KeyValuePojo<K, V>> {
         if (index >= BUCKET_CAPACITY)
             return DEFAULT_INDEX;
         int i = index;
-        while (i < BUCKET_CAPACITY && this.buckets[i] == null)
+        while (i < BUCKET_CAPACITY && (this.buckets[i] == null || this.buckets[i].isEmpty()))
             i++;
         return i == BUCKET_CAPACITY ? DEFAULT_INDEX : i;
     }
@@ -70,7 +70,7 @@ public class CustomHashMap<K, V> implements Iterable<KeyValuePojo<K, V>> {
         synchronized (editLock) {
             DoublyLinkedList<K, V> listContainingNodeToRemove = this.fetchListHoldingKey(key);
             boolean status = listContainingNodeToRemove.removeNodeWithKeyIfExists(key);
-            if (listContainingNodeToRemove.length() == 0)
+            if (listContainingNodeToRemove.isEmpty())
                 this.buckets[hash(key)] = null;
             return status;
         }

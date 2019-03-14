@@ -24,7 +24,7 @@ public class CustomHashMapIterator<K, V> implements Iterator<KeyValuePojo<K, V>>
             this.currentBucketIndex = updatedBucketIndex;
             this.currentNodeIndexInList = DEFAULT_INDEX;
         } else if (this.currentNodeIndexInList + 1 >= lengthOfListInCurrentBucket()) {
-            this.currentBucketIndex = this.hashMap.getNextNonEmptyBucketFromIndex(this.currentBucketIndex);
+            this.currentBucketIndex = this.hashMap.getNextNonEmptyBucketFromIndex(this.currentBucketIndex + 1);
             this.currentNodeIndexInList = DEFAULT_INDEX;
         }
     }
