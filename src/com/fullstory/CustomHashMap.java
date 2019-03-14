@@ -1,6 +1,8 @@
 package com.fullstory;
 
-import java.util.Iterator;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static com.fullstory.CustomHashMapIterator.DEFAULT_INDEX;
 
@@ -23,6 +25,10 @@ public class CustomHashMap<K, V> implements Iterable<KeyValuePojo<K, V>> {
         if (this.buckets[index] == null)
             this.buckets[index] = new DoublyLinkedList<>();
         return this.buckets[index];
+    }
+
+    private Stream<DoublyLinkedList<K, V>> nonEmptyBucketsStream() {
+        return Arrays.stream(this.buckets).filter(Objects::nonNull);
     }
 
     // Package private and can only be used by the Iterator!
@@ -77,6 +83,18 @@ public class CustomHashMap<K, V> implements Iterable<KeyValuePojo<K, V>> {
             }
             System.gc();
         }
+    }
+
+    public Set<K> keys() {
+        return nonEmptyBucketsStream().flatMap(DoublyLinkedList::getAllKeys).collect(Collectors.toSet());
+    }
+
+    public List<V> values() {
+        return nonEmptyBucketsStream().flatMap(DoublyLinkedList::getAllValues).collect(Collectors.toList());
+    }
+
+    public List<KeyValuePojo<K, V>> keyValuePojo() {
+        return nonEmptyBucketsStream().flatMap(DoublyLinkedList::getAllPojo).collect(Collectors.toList());
     }
 
     @Override

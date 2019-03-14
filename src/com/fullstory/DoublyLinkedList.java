@@ -1,5 +1,8 @@
 package com.fullstory;
 
+import java.util.ArrayList;
+import java.util.stream.Stream;
+
 class DoublyLinkedList<K, V> {
     private KeyValueNode<K, V> head = null;
     private int numberOfNodes = 0;
@@ -31,6 +34,16 @@ class DoublyLinkedList<K, V> {
         previousPointer.next(nextPointer);
         nextPointer.previous(previousPointer);
         numberOfNodes--;
+    }
+
+    private Stream<KeyValueNode<K, V>> allNodesStream() {
+        ArrayList<KeyValueNode<K, V>> nodes = new ArrayList<>();
+        KeyValueNode<K, V> tempPointer = this.head;
+        while (tempPointer != null) {
+            nodes.add(tempPointer);
+            tempPointer = tempPointer.next();
+        }
+        return nodes.stream();
     }
 
     void add(K key, V value) {
@@ -74,5 +87,17 @@ class DoublyLinkedList<K, V> {
 
     int length() {
         return numberOfNodes;
+    }
+
+    Stream<K> getAllKeys() {
+        return allNodesStream().map(KeyValueNode::key);
+    }
+
+    Stream<V> getAllValues() {
+        return allNodesStream().map(KeyValueNode::value);
+    }
+
+    Stream<KeyValuePojo<K, V>> getAllPojo() {
+        return allNodesStream().map(node -> new KeyValuePojo<>(node.key(), node.value()));
     }
 }

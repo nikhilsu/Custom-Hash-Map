@@ -9,6 +9,7 @@ public class CustomHashMapIterator<K, V> implements Iterator<KeyValuePojo<K, V>>
     private int currentNodeIndexInList;
     private int currentBucketIndex;
 
+    // Package-private
     CustomHashMapIterator(CustomHashMap<K, V> hashMap, Object hashMapEditLock) {
         this.hashMap = hashMap;
         this.hashMapEditLock = hashMapEditLock;
