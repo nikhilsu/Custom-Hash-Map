@@ -23,6 +23,22 @@ public class CustomHashMap<K, V> implements Iterable<KeyValuePojo<K, V>> {
         return this.buckets[index];
     }
 
+    int getFirstNonEmptyBucket() {
+        return getNextNonEmptyBucketFromIndex(0);
+    }
+
+    // Package private and can only be used by the Iterator!
+    int getNextNonEmptyBucketFromIndex(int index) {
+        synchronized (editLock) {
+            if (index >= BUCKET_CAPACITY)
+                return -1;
+            int i = index;
+            while (i < BUCKET_CAPACITY && this.buckets[i] == null)
+                i++;
+            return i == BUCKET_CAPACITY ? -1 : i;
+        }
+    }
+
     public void put(K key, V value) {
         synchronized (editLock) {
             DoublyLinkedList<K, V> list = fetchListHoldingKey(key);
@@ -61,6 +77,6 @@ public class CustomHashMap<K, V> implements Iterable<KeyValuePojo<K, V>> {
 
     @Override
     public Iterator<KeyValuePojo<K, V>> iterator() {
-        return new CustomHashMapIterator<>(buckets, editLock);
+        return new CustomHashMapIterator<>(this, editLock);
     }
 }
