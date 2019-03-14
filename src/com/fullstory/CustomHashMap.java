@@ -1,28 +1,33 @@
 package com.fullstory;
 
-public class CustomHashMap<K, V> {
-    private static int INDEX_LIMIT = 64;
-    private final DoublyLinkedList<K, V>[] arrayOfLinkedList;
+import java.util.Iterator;
+
+public class CustomHashMap<K, V> implements Iterable<KeyValuePojo<K, V>> {
+    private static int BUCKET_CAPACITY = 64;
+    private DoublyLinkedList<K, V>[] buckets;
+    private final Object editLock = new Object();
 
     @SuppressWarnings("unchecked")
     private CustomHashMap() {
-        this.arrayOfLinkedList = new DoublyLinkedList[INDEX_LIMIT];
+        this.buckets = new DoublyLinkedList[BUCKET_CAPACITY];
     }
 
     private int hash(K key) {
-        return key.hashCode() % INDEX_LIMIT;
+        return key.hashCode() % BUCKET_CAPACITY;
     }
 
     private DoublyLinkedList<K, V> fetchListHoldingKey(K key) {
         int index = hash(key);
-        if (this.arrayOfLinkedList[index] == null)
-            this.arrayOfLinkedList[index] = new DoublyLinkedList<>();
-        return this.arrayOfLinkedList[index];
+        if (this.buckets[index] == null)
+            this.buckets[index] = new DoublyLinkedList<>();
+        return this.buckets[index];
     }
 
     public void put(K key, V value) {
-        DoublyLinkedList<K, V> list = fetchListHoldingKey(key);
-        list.add(key, value);
+        synchronized (editLock) {
+            DoublyLinkedList<K, V> list = fetchListHoldingKey(key);
+            list.add(key, value);
+        }
     }
 
     public V get(K key) throws KeyNotFoundException {
@@ -33,7 +38,26 @@ public class CustomHashMap<K, V> {
         return fetchListHoldingKey(key).fetchValueOfNodeWithKey(key, defaultValue);
     }
 
+    public V getThreadSafe(K key, V defaultValue) {
+        synchronized (editLock) {
+            return fetchListHoldingKey(key).fetchValueOfNodeWithKey(key, defaultValue);
+        }
+    }
+
     public boolean remove(K key) {
-        return this.fetchListHoldingKey(key).removeNodeWithKeyIfExists(key);
+        synchronized (editLock) {
+            return this.fetchListHoldingKey(key).removeNodeWithKeyIfExists(key);
+        }
+    }
+
+    public void clear() {
+        synchronized (editLock) {
+            System.gc();
+        }
+    }
+
+    @Override
+    public Iterator<KeyValuePojo<K, V>> iterator() {
+        return new CustomHashMapIterator<>(buckets, editLock);
     }
 }

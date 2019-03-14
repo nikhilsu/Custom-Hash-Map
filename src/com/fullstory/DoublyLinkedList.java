@@ -1,18 +1,18 @@
 package com.fullstory;
 
 class DoublyLinkedList<K, V> {
-    private KeyValuePair<K, V> head = null;
+    private KeyValueNode<K, V> head = null;
 
-    private void insertAtBeginning(KeyValuePair<K, V> newKeyValuePair) {
+    private void insertAtBeginning(KeyValueNode<K, V> newKeyValueNode) {
         if (this.head != null) {
-            newKeyValuePair.next(this.head.next());
-            this.head.previous(newKeyValuePair);
+            newKeyValueNode.next(this.head.next());
+            this.head.previous(newKeyValueNode);
         }
-        this.head = newKeyValuePair;
+        this.head = newKeyValueNode;
     }
 
-    private KeyValuePair<K, V> fetchNodeWithKey(K key) {
-        KeyValuePair<K, V> tempPointer = this.head;
+    private KeyValueNode<K, V> fetchNodeWithKey(K key) {
+        KeyValueNode<K, V> tempPointer = this.head;
         while (tempPointer != null) {
             if (tempPointer.key().equals(key))
                 return tempPointer;
@@ -21,9 +21,9 @@ class DoublyLinkedList<K, V> {
         return null;
     }
 
-    private void deleteNode(KeyValuePair<K, V> node) {
-        KeyValuePair<K, V> previousPointer = node.previous();
-        KeyValuePair<K, V> nextPointer = node.next();
+    private void deleteNode(KeyValueNode<K, V> node) {
+        KeyValueNode<K, V> previousPointer = node.previous();
+        KeyValueNode<K, V> nextPointer = node.next();
         node.next(null);
         node.previous(null);
         previousPointer.next(nextPointer);
@@ -31,27 +31,27 @@ class DoublyLinkedList<K, V> {
     }
 
     void add(K key, V value) {
-        KeyValuePair<K, V> newKeyValuePair = new KeyValuePair<>(key, value);
+        KeyValueNode<K, V> newKeyValueNode = new KeyValueNode<>(key, value);
         removeNodeWithKeyIfExists(key);
-        insertAtBeginning(newKeyValuePair);
+        insertAtBeginning(newKeyValueNode);
     }
 
     V fetchValueOfNodeWithKey(K key, V defaultValue) {
-        KeyValuePair<K, V> node = fetchNodeWithKey(key);
+        KeyValueNode<K, V> node = fetchNodeWithKey(key);
         if (node == null)
             return defaultValue;
         return node.value();
     }
 
     V fetchValueOfNodeWithKey(K key) throws KeyNotFoundException {
-        KeyValuePair<K, V> node = fetchNodeWithKey(key);
+        KeyValueNode<K, V> node = fetchNodeWithKey(key);
         if (node == null)
             throw new KeyNotFoundException(key.toString());
         return node.value();
     }
 
     boolean removeNodeWithKeyIfExists(K key) {
-        KeyValuePair<K, V> nodeToDelete = this.fetchNodeWithKey(key);
+        KeyValueNode<K, V> nodeToDelete = this.fetchNodeWithKey(key);
         if (nodeToDelete == null)
             return false;
 

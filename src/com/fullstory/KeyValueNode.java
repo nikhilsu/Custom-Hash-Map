@@ -1,30 +1,30 @@
 package com.fullstory;
 
-class KeyValuePair<K, V> {
+class KeyValueNode<K, V> {
     private final K key;
     private final V value;
-    private KeyValuePair<K, V> next;
-    private KeyValuePair<K, V> previous;
+    private KeyValueNode<K, V> next;
+    private KeyValueNode<K, V> previous;
 
-    KeyValuePair(K key, V value) {
+    KeyValueNode(K key, V value) {
         this.key = key;
         this.value = value;
         this.next = null;
     }
 
-    void next(KeyValuePair<K, V> next) {
+    void next(KeyValueNode<K, V> next) {
         this.next = next;
     }
 
-    KeyValuePair<K, V> next() {
+    KeyValueNode<K, V> next() {
         return this.next;
     }
 
-    void previous(KeyValuePair<K, V> previous) {
+    void previous(KeyValueNode<K, V> previous) {
         this.previous = previous;
     }
 
-    KeyValuePair<K, V> previous() {
+    KeyValueNode<K, V> previous() {
         return this.previous;
     }
 
@@ -34,5 +34,9 @@ class KeyValuePair<K, V> {
 
     V value() {
         return value;
+    }
+
+    KeyValuePojo<K, V> pojo() {
+        return new KeyValuePojo<>(key, value);
     }
 }
