@@ -6,18 +6,19 @@ import java.util.stream.Stream;
 
 import static com.fullstory.CustomHashMapIterator.DEFAULT_INDEX;
 
-@SuppressWarnings({"WeakerAccess",}) //"unused"})
+@SuppressWarnings({"WeakerAccess", "unused"})
 public class CustomHashMap<K, V> implements Iterable<KeyValuePojo<K, V>> {
     private static int BUCKET_CAPACITY = 64;
     private DoublyLinkedList<K, V>[] buckets;
     private final Object editLock = new Object();
 
-    // For Unit Tests!
+    // For Injecting Mocks from Unit Tests! Package-private
     CustomHashMap(DoublyLinkedList<K, V>[] buckets, int capacity) {
         this.buckets = buckets;
         BUCKET_CAPACITY = capacity;
     }
 
+    // For Shipping.
     public CustomHashMap() {
         init();
     }

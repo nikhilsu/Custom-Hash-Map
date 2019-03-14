@@ -4,9 +4,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Stream;
 
 import static org.mockito.Mockito.*;
@@ -130,5 +128,35 @@ public class CustomHashMapTest {
         Set<String> allKeys = customHashMap.keys();
 
         Assert.assertEquals(expectedKeySet, allKeys);
+    }
+
+    @Test
+    public void shouldReturnListOfAllValuesInTheHashMap() {
+        String value1 = "value1";
+        String value2 = "value2";
+        when(bucketZeroMock.isEmpty()).thenReturn(false);
+        when(bucketZeroMock.getAllValues()).thenReturn(Stream.of(value1));
+        when(bucketOneMock.isEmpty()).thenReturn(false);
+        when(bucketOneMock.getAllValues()).thenReturn(Stream.of(value2));
+        List<String> expectedListOfValues = Arrays.asList(value1, value2);
+
+        List<String> allValues = customHashMap.values();
+
+        Assert.assertEquals(expectedListOfValues, allValues);
+    }
+
+    @Test
+    public void shouldReturnAllKeyValuesInTheHashMapAsListOfPojo() {
+        KeyValuePojo<String, String> pojo1 = new KeyValuePojo<>(keyWithHashZero, "value1");
+        KeyValuePojo<String, String> pojo2 = new KeyValuePojo<>(keyWithHashOne, "value2");
+        when(bucketZeroMock.isEmpty()).thenReturn(false);
+        when(bucketZeroMock.getAllPojo()).thenReturn(Stream.of(pojo1));
+        when(bucketOneMock.isEmpty()).thenReturn(false);
+        when(bucketOneMock.getAllPojo()).thenReturn(Stream.of(pojo2));
+        List<KeyValuePojo<String, String>> expectedListOfPojo = Arrays.asList(pojo1, pojo2);
+
+        List<KeyValuePojo<String, String>> keyValuePojo = customHashMap.keyValuePojo();
+
+        Assert.assertEquals(expectedListOfPojo, keyValuePojo);
     }
 }
