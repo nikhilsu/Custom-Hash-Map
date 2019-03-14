@@ -52,6 +52,9 @@ public class CustomHashMap<K, V> implements Iterable<KeyValuePojo<K, V>> {
 
     public void clear() {
         synchronized (editLock) {
+            for (int i = 0; i < BUCKET_CAPACITY; i++) {
+                this.buckets[i] = null;
+            }
             System.gc();
         }
     }

@@ -2,6 +2,7 @@ package com.fullstory;
 
 class DoublyLinkedList<K, V> {
     private KeyValueNode<K, V> head = null;
+    private int numberOfNodes = 0;
 
     private void insertAtBeginning(KeyValueNode<K, V> newKeyValueNode) {
         if (this.head != null) {
@@ -9,6 +10,7 @@ class DoublyLinkedList<K, V> {
             this.head.previous(newKeyValueNode);
         }
         this.head = newKeyValueNode;
+        numberOfNodes++;
     }
 
     private KeyValueNode<K, V> fetchNodeWithKey(K key) {
@@ -28,6 +30,7 @@ class DoublyLinkedList<K, V> {
         node.previous(null);
         previousPointer.next(nextPointer);
         nextPointer.previous(previousPointer);
+        numberOfNodes--;
     }
 
     void add(K key, V value) {
@@ -57,5 +60,19 @@ class DoublyLinkedList<K, V> {
 
         deleteNode(nodeToDelete);
         return true;
+    }
+
+    KeyValuePojo<K, V> getPojoOfNodeAtPosition(int index) {
+        if (index >= this.length())
+            return null;
+        KeyValueNode<K, V> tempPointer = this.head;
+        for (int i = 0; i < index; i++) {
+            tempPointer = tempPointer.next();
+        }
+        return tempPointer.pojo();
+    }
+
+    int length() {
+        return numberOfNodes;
     }
 }
