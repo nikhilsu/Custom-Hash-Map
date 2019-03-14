@@ -1,0 +1,10 @@
+apply plugin:'idea'
+apply plugin:'java'
+
+
+idea {
+    module {
+        sourceDirs += file('src')
+        testSourceDirs += file('test')
+    }
+}
