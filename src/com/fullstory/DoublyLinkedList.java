@@ -39,14 +39,14 @@ class DoublyLinkedList<K, V> {
         insertAtBeginning(newKeyValueNode);
     }
 
-    V fetchValueOfNodeWithKey(K key, V defaultValue) {
+    V fetchValueInNodeWithKey(K key, V defaultValue) {
         KeyValueNode<K, V> node = fetchNodeWithKey(key);
         if (node == null)
             return defaultValue;
         return node.value();
     }
 
-    V fetchValueOfNodeWithKey(K key) throws KeyNotFoundException {
+    V fetchValueInNodeWithKey(K key) throws KeyNotFoundException {
         KeyValueNode<K, V> node = fetchNodeWithKey(key);
         if (node == null)
             throw new KeyNotFoundException(key.toString());
@@ -62,7 +62,7 @@ class DoublyLinkedList<K, V> {
         return true;
     }
 
-    KeyValuePojo<K, V> getPojoOfNodeAtPosition(int index) {
+    KeyValuePojo<K, V> getPojoOfNodeAtIndex(int index) {
         if (index >= this.length())
             return null;
         KeyValueNode<K, V> tempPointer = this.head;

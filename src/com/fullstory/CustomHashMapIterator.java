@@ -3,33 +3,62 @@ package com.fullstory;
 import java.util.Iterator;
 
 public class CustomHashMapIterator<K, V> implements Iterator<KeyValuePojo<K, V>> {
-    private final int DEFAULT = -1;
+    final static int DEFAULT_INDEX = -1;
     private final CustomHashMap<K, V> hashMap;
     private final Object hashMapEditLock;
-    private int currentNodeInList;
-    private int currentListLength;
+    private int currentNodeIndexInList;
     private int currentBucketIndex;
 
     CustomHashMapIterator(CustomHashMap<K, V> hashMap, Object hashMapEditLock) {
         this.hashMap = hashMap;
         this.hashMapEditLock = hashMapEditLock;
-        this.currentBucketIndex = DEFAULT;
-        this.currentListLength = DEFAULT;
-        this.currentNodeInList = DEFAULT;
+        this.currentBucketIndex = 0;
+        this.currentNodeIndexInList = DEFAULT_INDEX;
+    }
+
+    private void updateNonEmptyBucketIndex() {
+        int updatedBucketIndex = this.hashMap.getNextNonEmptyBucketFromIndex(this.currentBucketIndex);
+
+        if (updatedBucketIndex != this.currentBucketIndex) {
+            this.currentBucketIndex = updatedBucketIndex;
+            this.currentNodeIndexInList = DEFAULT_INDEX;
+        } else if (this.currentNodeIndexInList + 1 >= lengthOfListInCurrentBucket()) {
+            this.currentBucketIndex = this.hashMap.getNextNonEmptyBucketFromIndex(this.currentBucketIndex);
+            this.currentNodeIndexInList = DEFAULT_INDEX;
+        }
+    }
+
+    private DoublyLinkedList<K, V> getCurrentList() {
+        return this.hashMap.getListInBucket(this.currentBucketIndex);
+    }
+
+    private int lengthOfListInCurrentBucket() {
+        return getCurrentList().length();
+    }
+
+    private KeyValuePojo<K, V> getNextPojo() {
+        this.currentNodeIndexInList++;
+        return getCurrentList().getPojoOfNodeAtIndex(this.currentNodeIndexInList);
+    }
+
+    private boolean hasNextUnsafe() {
+        updateNonEmptyBucketIndex();
+        return this.currentBucketIndex != DEFAULT_INDEX;
     }
 
     @Override
     public boolean hasNext() {
-        if (this.currentBucketIndex == DEFAULT) {
-            this.currentBucketIndex = this.hashMap.getFirstNonEmptyBucket();
-        } else {
-            this.currentBucketIndex = this.hashMap.getNextNonEmptyBucketFromIndex(this.currentBucketIndex);
+        synchronized (this.hashMapEditLock) {
+            return hasNextUnsafe();
         }
-        return this.currentBucketIndex == DEFAULT;
     }
 
     @Override
     public KeyValuePojo<K, V> next() {
-        return null;
+        synchronized (this.hashMapEditLock) {
+            if (hasNextUnsafe())
+                return getNextPojo();
+            return null;
+        }
     }
 }
