@@ -8,7 +8,11 @@ class DoublyLinkedList<K, V> {
     private int numberOfNodes;
 
     DoublyLinkedList() {
-        this.head = null;
+        this(null);
+    }
+
+    DoublyLinkedList(KeyValueNode<K, V> head) {
+        this.head = head;
         this.numberOfNodes = 0;
     }
 
