@@ -10,6 +10,7 @@ class KeyValueNode<K, V> {
         this.key = key;
         this.value = value;
         this.next = null;
+        this.previous = null;
     }
 
     void next(KeyValueNode<K, V> next) {

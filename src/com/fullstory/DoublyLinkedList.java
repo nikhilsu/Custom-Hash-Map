@@ -14,7 +14,7 @@ class DoublyLinkedList<K, V> {
 
     private void insertAtBeginning(KeyValueNode<K, V> newKeyValueNode) {
         if (this.head != null) {
-            newKeyValueNode.next(this.head.next());
+            newKeyValueNode.next(this.head);
             this.head.previous(newKeyValueNode);
         }
         this.head = newKeyValueNode;

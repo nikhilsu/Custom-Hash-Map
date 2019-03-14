@@ -11,9 +11,16 @@ public class CustomHashMap<K, V> implements Iterable<KeyValuePojo<K, V>> {
     private DoublyLinkedList<K, V>[] buckets;
     private final Object editLock = new Object();
 
-    @SuppressWarnings("unchecked")
     public CustomHashMap() {
+        init();
+    }
+
+    @SuppressWarnings("unchecked")
+    private void init() {
         this.buckets = new DoublyLinkedList[BUCKET_CAPACITY];
+        for (int i = 0; i < BUCKET_CAPACITY; i++) {
+            this.buckets[i] = new DoublyLinkedList<>();
+        }
     }
 
     private int hash(K key) {
@@ -22,13 +29,11 @@ public class CustomHashMap<K, V> implements Iterable<KeyValuePojo<K, V>> {
 
     private DoublyLinkedList<K, V> fetchListHoldingKey(K key) {
         int index = hash(key);
-        if (this.buckets[index] == null)
-            this.buckets[index] = new DoublyLinkedList<>();
         return this.buckets[index];
     }
 
     private Stream<DoublyLinkedList<K, V>> nonEmptyBucketsStream() {
-        return Arrays.stream(this.buckets).filter(Objects::nonNull);
+        return Arrays.stream(this.buckets).filter(bucket -> !bucket.isEmpty());
     }
 
     // Package private and can only be used by the Iterator!
@@ -36,7 +41,7 @@ public class CustomHashMap<K, V> implements Iterable<KeyValuePojo<K, V>> {
         if (index >= BUCKET_CAPACITY)
             return DEFAULT_INDEX;
         int i = index;
-        while (i < BUCKET_CAPACITY && (this.buckets[i] == null || this.buckets[i].isEmpty()))
+        while (i < BUCKET_CAPACITY && this.buckets[i].isEmpty())
             i++;
         return i == BUCKET_CAPACITY ? DEFAULT_INDEX : i;
     }
@@ -66,21 +71,17 @@ public class CustomHashMap<K, V> implements Iterable<KeyValuePojo<K, V>> {
         }
     }
 
-    public boolean remove(K key) {
+    public void remove(K key) throws KeyNotFoundException {
         synchronized (editLock) {
             DoublyLinkedList<K, V> listContainingNodeToRemove = this.fetchListHoldingKey(key);
-            boolean status = listContainingNodeToRemove.removeNodeWithKeyIfExists(key);
-            if (listContainingNodeToRemove.isEmpty())
-                this.buckets[hash(key)] = null;
-            return status;
+            if (!listContainingNodeToRemove.removeNodeWithKeyIfExists(key))
+                throw new KeyNotFoundException(key.toString());
         }
     }
 
     public void clear() {
         synchronized (editLock) {
-            for (int i = 0; i < BUCKET_CAPACITY; i++) {
-                this.buckets[i] = null;
-            }
+            init();
             System.gc();
         }
     }
@@ -95,6 +96,10 @@ public class CustomHashMap<K, V> implements Iterable<KeyValuePojo<K, V>> {
 
     public List<KeyValuePojo<K, V>> keyValuePojo() {
         return nonEmptyBucketsStream().flatMap(DoublyLinkedList::getAllPojo).collect(Collectors.toList());
+    }
+
+    public boolean isPresent(K key) {
+        return !fetchListHoldingKey(key).isEmpty();
     }
 
     @Override
