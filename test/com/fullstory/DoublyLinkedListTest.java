@@ -14,6 +14,12 @@ import static com.fullstory.LinkedListTestHelper.createLinkedListFromTuples;
 
 public class DoublyLinkedListTest {
     private DoublyLinkedList<String, String> doublyLinkedList;
+    private final String key1 = "key1";
+    private final String key2 = "key2";
+    private final String key3 = "key3";
+    private final String value1 = "value1";
+    private final String value2 = "value2";
+    private final String value3 = "value3";
 
     @Before
     @SuppressWarnings("unchecked")
@@ -23,53 +29,36 @@ public class DoublyLinkedListTest {
 
     @Test
     public void shouldAddAKeyValueNodeAtTheBeginningWhenTheListIsEmpty() {
-        String key = "key";
-        String value = "value";
-        List<KeyValuePojo<String, String>> expectedLinkedList = Collections.singletonList(new KeyValuePojo<>(key, value));
+        List<KeyValuePojo<String, String>> expectedLinkedList = Collections.singletonList(new KeyValuePojo<>(key1, value1));
 
-        doublyLinkedList.add(key, value);
+        doublyLinkedList.add(key1, value1);
 
-        Assert.assertEquals(currentLinkedList(), expectedLinkedList);
+        Assert.assertEquals(expectedLinkedList, currentLinkedList());
     }
 
     @Test
     public void shouldAddAKeyValueNodeAtTheBeginningWhenTheListIsNotEmpty() {
-        String key1 = "key1";
-        String value1 = "value1";
-        doublyLinkedList = new DoublyLinkedList<>(createLinkedListFromTuples(Collections.singletonList(new TupleForTests(key1, value1))));
-
-        String key2 = "key2";
-        String value2 = "value2";
+        doublyLinkedList = linkedListOfSize(1);
         List<KeyValuePojo<String, String>> expectedLinkedList = Arrays.asList(new KeyValuePojo<>(key2, value2), new KeyValuePojo<>(key1, value1));
 
         doublyLinkedList.add(key2, value2);
 
-        Assert.assertEquals(currentLinkedList(), expectedLinkedList);
+        Assert.assertEquals(expectedLinkedList, currentLinkedList());
     }
 
     @Test
     public void shouldHoldTheUpdatedValueWhenAKeyIsAddedMoreThanOnce() {
-        String key = "key";
-        String value1 = "value1";
-        doublyLinkedList = new DoublyLinkedList<>(createLinkedListFromTuples(Collections.singletonList(new TupleForTests(key, value1))));
-        String value2 = "value2";
-        List<KeyValuePojo<String, String>> expectedLinkedList = Collections.singletonList(new KeyValuePojo<>(key, value2));
+        doublyLinkedList = linkedListOfSize(1);
+        List<KeyValuePojo<String, String>> expectedLinkedList = Collections.singletonList(new KeyValuePojo<>(key1, value2));
 
-        doublyLinkedList.add(key, value2);
+        doublyLinkedList.add(key1, value2);
 
-        Assert.assertEquals(currentLinkedList(), expectedLinkedList);
+        Assert.assertEquals(expectedLinkedList, currentLinkedList());
     }
 
     @Test
     public void shouldRetrieveValueOfNodeWithGivenKeyWhenItExistsInTheList() {
-        String key1 = "key1";
-        String key2 = "key2";
-        String key3 = "key3";
-        String value1 = "value1";
-        String value2 = "value2";
-        String value3 = "value3";
-        KeyValueNode<String, String> head = createLinkedListFromTuples(Arrays.asList(new TupleForTests(key1, value1), new TupleForTests(key2, value2), new TupleForTests(key3, value3)));
-        doublyLinkedList = new DoublyLinkedList<>(head);
+        doublyLinkedList = linkedListOfSize(3);
         boolean exceptionOccurred = false;
         String nodeValue = null;
 
@@ -86,14 +75,8 @@ public class DoublyLinkedListTest {
     @SuppressWarnings("ConstantConditions")
     @Test
     public void shouldThrowExceptionWhenTryingToRetrieveValueOfNodeWithGivenAbsentKey() {
-        String key1 = "key1";
-        String key2 = "key2";
-        String value1 = "value1";
-        String value2 = "value2";
+        doublyLinkedList = linkedListOfSize(2);
         String absentKey = "absent key";
-
-        KeyValueNode<String, String> head = createLinkedListFromTuples(Arrays.asList(new TupleForTests(key1, value1), new TupleForTests(key2, value2)));
-        doublyLinkedList = new DoublyLinkedList<>(head);
         boolean exceptionOccurred = false;
         String nodeValue = null;
 
@@ -109,12 +92,8 @@ public class DoublyLinkedListTest {
 
     @Test
     public void shouldReturnDefaultValueWhenTryingToRetrieveValueOfNodeWithGivenAbsentKey() {
-        String key1 = "key1";
-        String value1 = "value1";
+        doublyLinkedList = linkedListOfSize(1);
         String absentKey = "absent key";
-
-        KeyValueNode<String, String> head = createLinkedListFromTuples(Collections.singletonList(new TupleForTests(key1, value1)));
-        doublyLinkedList = new DoublyLinkedList<>(head);
         String defaultValue = "default";
 
         String nodeValue = doublyLinkedList.fetchValueInNodeWithKey(absentKey, defaultValue);
@@ -122,7 +101,70 @@ public class DoublyLinkedListTest {
         Assert.assertEquals(defaultValue, nodeValue);
     }
 
+    @Test
+    public void shouldRemoveANodeWhenItExistsInTheList() {
+        List<KeyValuePojo<String, String>> expectedPojoLoist = Arrays.asList(new KeyValuePojo<>(key3, value3),
+                new KeyValuePojo<>(key1, value1));
+        doublyLinkedList = linkedListOfSize(3);
+
+        boolean removedSuccessfully = doublyLinkedList.removeNodeWithKeyIfExists(key2);
+
+        Assert.assertEquals(expectedPojoLoist, currentLinkedList());
+        Assert.assertTrue(removedSuccessfully);
+    }
+
+    @Test
+    public void shouldReturnFalseWhenTryingToRemoveANodeThatIsNotInTheList() {
+        doublyLinkedList = linkedListOfSize(3);
+        String absentKey = "absentKey";
+
+        boolean removedSuccessfully = doublyLinkedList.removeNodeWithKeyIfExists(absentKey);
+
+        Assert.assertFalse(removedSuccessfully);
+    }
+
+    @Test
+    public void shouldReturnThePojoOfNodeGivenIndex() {
+        doublyLinkedList = linkedListOfSize(3);
+        KeyValuePojo<String, String> expectedPojo = new KeyValuePojo<>(key2, value2);
+
+        KeyValuePojo<String, String> actualPojo = doublyLinkedList.getPojoOfNodeAtIndex(1);
+
+        Assert.assertEquals(expectedPojo, actualPojo);
+    }
+
+    @Test
+    public void shouldReturnNullWhenNoNodeExistsAtGivenIndex() {
+        doublyLinkedList = linkedListOfSize(2);
+
+        KeyValuePojo<String, String> actualPojo = doublyLinkedList.getPojoOfNodeAtIndex(5);
+
+        Assert.assertNull(actualPojo);
+    }
+
     private List<KeyValuePojo<String, String>> currentLinkedList() {
         return doublyLinkedList.getAllPojo().collect(Collectors.toList());
+    }
+
+    private DoublyLinkedList<String, String> linkedListOfSize(int size) {
+        KeyValueNode<String, String> head = null;
+        switch (size) {
+            case 1:
+                head = createLinkedListFromTuples(Collections.singletonList(
+                        new TupleForTests(key1, value1)));
+                break;
+            case 2:
+                head = createLinkedListFromTuples(Arrays.asList(
+                        new TupleForTests(key1, value1),
+                        new TupleForTests(key2, value2)));
+                break;
+            case 3:
+                head = createLinkedListFromTuples(Arrays.asList(
+                        new TupleForTests(key1, value1),
+                        new TupleForTests(key2, value2),
+                        new TupleForTests(key3, value3)));
+                break;
+        }
+        return new DoublyLinkedList<>(head, size);
     }
 }

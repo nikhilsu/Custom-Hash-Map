@@ -8,12 +8,12 @@ class DoublyLinkedList<K, V> {
     private int numberOfNodes;
 
     DoublyLinkedList() {
-        this(null);
+        this(null, 0);
     }
 
-    DoublyLinkedList(KeyValueNode<K, V> head) {
+    DoublyLinkedList(KeyValueNode<K, V> head, int numberOfNodes) {
         this.head = head;
-        this.numberOfNodes = 0;
+        this.numberOfNodes = numberOfNodes;
     }
 
     private void insertAtBeginning(KeyValueNode<K, V> newKeyValueNode) {
