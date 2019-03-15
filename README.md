@@ -47,12 +47,12 @@ Gradle 4.2.1 (to build JAR)
 #### Building the project
 The jar of the hash map will be generated into the folder `build/libs/FullStory.jar`
 
-```bash
+```
 $ gradle clean build
 ```
 To run the tests, use the following command:-
 
-```bash
+```
 $ gradle clean test
 ``` 
 
