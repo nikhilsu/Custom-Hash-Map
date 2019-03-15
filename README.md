@@ -1,7 +1,14 @@
 # Custom-Hash-Map
-Implementing a custom hash map in Java. The main features of this Hash map are as follows:-
+One of the main features that I wanted to add to my own implementation of a Hash Map was to make it Thread-Safe.
+Sure, there is a HashTable in Java that ensures that its operations are Thread-safe, however,
+I had not come across a Hash Map that has an iterator that is also Thread-safe!
 
-1. The Hash map implementation is Thread-safe!
+Thus, here I am, implementing a Hash-Map that is not only Thread-safe, but it also packs an iterator that is Thread-safe too!
+The Hash Map is implemented using Generics/Parameterized types, and hence can be made used of using an concrete-type in Java. 
+
+The main features of this Hash map are summarized as follows:-
+
+1. All Hash map edit operations are Thread-safe!
 2. It has a custom iterator which iterates over the Key-Value pair in a **Thread-safe** manner!
 3. Hash collisions are handled by using a Double-Linked-List.
 
@@ -10,10 +17,14 @@ Implementing a custom hash map in Java. The main features of this Hash map are a
     1. Using right abstractions.
     2. Excellent use of Generic/Parameterized types in Java!
     3. Made sure every class and every method has the right access specifier.
-    3. Never-have-I-ever violated the "Tell don't ask principle".
+    4. Never-have-I-ever violated the "Tell don't ask principle".
 2. Ensuring Thread-safety like a boss! :)
-3. Used some really cool Java 8 features.
-3. Code is covered by test.
+3. Used some really cool Java 8 features - Streams, Lambdas, etc.
+4. Code is covered by test.
+    1. Using JUnit as the testing framework.
+    2. Mockito for mocking functionality.
+5. The build is automated using Gradle, which according to me is far more readable than Maven and the legendary `pom.xml`file!
+
 
 #### Future Work
 1. Implement either of the following(better) techniques to handle hash-collision:-
@@ -39,3 +50,10 @@ The jar of the hash map will be generated into the folder `build/libs/FullStory.
 ```bash
 $ gradle clean build
 ```
+To run the tests, use the following command:-
+
+```bash
+$ gradle clean test
+``` 
+
+Reports will be generated into the `build/reports/test/index.html` file!
