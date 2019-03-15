@@ -4,7 +4,7 @@ Sure, there is a HashTable in Java that ensures that its operations are Thread-s
 I had not come across a Hash Map that has an iterator that is also Thread-safe!
 
 Thus, here I am, implementing a Hash-Map that is not only Thread-safe, but it also packs an iterator that is Thread-safe too!
-The Hash Map is implemented using Generics/Parameterized types, and hence can be made used of using an concrete-type in Java. 
+The Hash Map is implemented using Generics/Parameterized types, and hence can be made of using any concrete-type in Java. 
 
 The main features of this Hash map are summarized as follows:-
 
