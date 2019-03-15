@@ -26,6 +26,10 @@ The main features of this Hash map are summarized as follows:-
 5. The build is automated using Gradle, which according to me is far more readable than Maven and the legendary `pom.xml`file!
 
 
+#### Time complexity
+The time complexity of the Hash lookup on average is O(1). However, since a Linked list is being used to handle hash-collisions. The time complexity in the worst case is O(n)! This can be improved by using better techniques for handling hash-collision. We can use something like, say, Linear-Probing to handle hash-collisions and doubling the size of the hashtable everytime its occupancy increases a certain threshold. This would however involve an overhead of rehashing all the existing keys everytime we double the size.
+
+
 #### Future Work
 1. Implement either of the following(better) techniques to handle hash-collision:-
     1. Linear Probing
